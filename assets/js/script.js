@@ -4,20 +4,26 @@ var geoData = function(city) {
     .then(function(res) {
         res.json().then(function(data) {
             console.log(data);
-            if (data.length > 1) {
-                for(var i = 0; i < data.length; i++){
-                    var conf = confirm("Is the city you are looking for " + data[i].name + ", " + data[i].country + ", " + data[i].state + "?");
-                    if (conf) {
-                        var coord = { "lon": data[i].lon, "lat": data[i].lat}
-                        weatherData(coord);
-                        break;
+            if (data.length === 0) {
+                alert("Sorry, could not find the city you were looking for.");
+            }else{
+                if (data.length > 1) {
+                    for(var i = 0; i < data.length; i++){
+                        var conf = confirm("Is the city you are looking for " + data[i].name + ", " + data[i].country + ", " + data[i].state + "?");
+                        if (conf) {
+                            var coord = { "lon": data[i].lon, "lat": data[i].lat}
+                            weatherData(coord);
+                            break;
+                        }
                     }
+                } else {
+                    var coord = { "lon": data[i].lon, "lat": data[i].lat}
+                            weatherData(coord);
                 }
-            } else {
-                var coord = { "lon": data[i].lon, "lat": data[i].lat}
-                        weatherData(coord);
             }
         })
+    }).catch(function(reason){
+        alert(reason);
     })
 }
 
@@ -27,11 +33,13 @@ var weatherData = function(coord) {
                 res.json().then(function(data){
                     displayWeather(data);
                 })
+            }).catch(function(reason){
+                alert(reason);
             })
 }
 
 var displayWeather = function(data) {
-    
+
     // displays the date of the weather from the daily forecast
     var date = moment.unix(data.daily[1].dt).format("MM/DD/YYYY");
     console.log(date);
