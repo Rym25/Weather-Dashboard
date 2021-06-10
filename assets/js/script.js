@@ -8,4 +8,10 @@ var weatherData = function(city) {
     })
 }
 
+$("#target").submit(function(event){
+    event.preventDefault();
+    console.log($("#input-city").val());
+})
+
+
 weatherData("park city");
