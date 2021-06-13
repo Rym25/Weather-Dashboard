@@ -31,14 +31,14 @@ var weatherData = function(coord) {
     fetch("https://api.openweathermap.org/data/2.5/onecall?lat=" + coord.lat + "&lon=" + coord.lon + "&exclude=minutely,hourly,alerts&units=imperial&appid=ef42ec77e5abd2ef83947df102ff17d6")
             .then(function(res){
                 res.json().then(function(data){
-                    displayCurrentWeather(data);
+                    displayWeather(data);
                 })
             }).catch(function(reason){
                 alert(reason);
             })
 }
 
-var displayCurrentWeather = function(data) {
+var displayWeather = function(data) {
     console.log(data);
     // puts needed weather data into an array
     var curWeath = [data.current.temp, data.current.wind_speed, data.current.humidity];
@@ -80,8 +80,11 @@ var displayCurrentWeather = function(data) {
             uviEl.append(uviSpan);
             $("#c-w").append(uviEl);
 
+            // creates the 5 day forecast
             for( var q = 1; q < 6; q++) {
+                // gets the date data from the daily section of the json
                 var fiveDate = moment.unix(data.daily[q].dt).format("MM/DD/YYYY");
+                // creates an array of the relevant data for the specified day
                 var weathArr = [fiveDate, data.daily[q].weather[0].icon, data.daily[q].temp.day, data.daily[q].wind_speed, data.daily[q].humidity];
                 fiveDayCard(weathArr, weathMetric);
             }
@@ -90,11 +93,13 @@ var displayCurrentWeather = function(data) {
 }
 
 var fiveDayCard = function (weathArr, metArr) {
-    var cardEl = $("<div>").addClass("card");
+    // creates card elements filled in with relevant data then appends the card to the #five-day element in the html
+    var cardEl = $("<div>").addClass("card five-day-cards border border-white");
     var cardBody = $("<div>").addClass("card-body");
     var cardTitleEl = $("<h4>").addClass("card-title").text(weathArr[0]);
     var cardSubEl = $("<img>").addClass("card-subtitle").attr("src","http://openweathermap.org/img/wn/"+ weathArr[1] + "@2x.png");
     cardBody.append(cardTitleEl, cardSubEl);
+    // loops over given arrays to create the card text p elements
     for (var i = 2; i < weathArr.length; i++) {
         var cardInfoEl = $("<p>").addClass("card-text").text(metArr[0][i-2] + weathArr[i] + metArr[1][i-2]);
         cardBody.append(cardInfoEl);
