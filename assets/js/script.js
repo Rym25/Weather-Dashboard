@@ -40,9 +40,9 @@ var weatherData = function(coord) {
 
 var displayCurrentWeather = function(data) {
     // puts needed weather data into an array
-    var curWeath = [data.current.temp, data.current.wind_speed, data.current.humidity, data.current.uvi];
+    var curWeath = [data.current.temp, data.current.wind_speed, data.current.humidity];
     // organizes titles for needed data into an array
-    var weathMetric = [["Temp: ","Wind: ","Humidity: ","UVI: "],[" °F"," MPH"," %"," "]];
+    var weathMetric = [["Temp: ","Wind: ","Humidity: "],[" °F"," MPH"," %",]];
 
     // gets the city name based on the latitude and longitude used in the One API call and appends a card title with the city, date, and an icon for the current weather
     fetch("http://api.openweathermap.org/geo/1.0/reverse?lat="+data.lat+"&lon="+data.lon+"&appid=ef42ec77e5abd2ef83947df102ff17d6")
@@ -63,12 +63,23 @@ var displayCurrentWeather = function(data) {
                 var textEl = $("<p>").addClass("card-text").text(weathMetric[0][i] + curWeath[i] + weathMetric[1][i]);
                 $("#c-w").append(textEl);
             }
+            // creates UVI element and color codes it
+            var uviEl = $("<p>").addClass("card-text").text("UVI: ");
+            var uviSpan = $("<span>").addClass("badge badge-pill").text(data.current.uvi);
+            // set the color based on the uvi
+            if (parseInt(data.current.uvi) <= 2.5){
+                uviSpan.addClass("badge-success");
+            } else if (parseInt(data.current.uvi) > 2.5 && parseInt(data.current.uvi) <= 5.5) {
+                uviSpan.addClass("badge-warning");
+            } else if (parseInt(data.current.uvi) > 5.5 && parseInt(data.current.uvi) <= 7.5) {
+                uviSpan.addClass("badge-orange");
+            } else {
+                uviSpan.addClass("badge-danger");
+            }
+            uviEl.append(uviSpan);
+            $("#c-w").append(uviEl);
         })
     });
-   
-    
-   
-   
 }
 
 $("#target").submit(function(event){
