@@ -39,13 +39,36 @@ var weatherData = function(coord) {
 }
 
 var displayCurrentWeather = function(data) {
-    // gets the date of the weather from the current forecast
-    var date = moment.unix(data.current.dt).format("MM/DD/YYYY");
-    // gets the required weather data
-    var temp = data.current.temp;
-    var uvi = data.current.uvi;
-    var wind = data.current.wind_speed;
-    var humidity = data.current.humidity;
+    // puts needed weather data into an array
+    var curWeath = [data.current.temp, data.current.wind_speed, data.current.humidity, data.current.uvi];
+    // organizes titles for needed data into an array
+    var weathMetric = [["Temp: ","Wind: ","Humidity: ","UVI: "],[" °F"," MPH"," %"," "]];
+
+    // gets the city name based on the latitude and longitude used in the One API call and appends a card title with the city, date, and an icon for the current weather
+    fetch("http://api.openweathermap.org/geo/1.0/reverse?lat="+data.lat+"&lon="+data.lon+"&appid=ef42ec77e5abd2ef83947df102ff17d6")
+    .then(function(res){
+        res.json().then(function(response) {
+            // gets current date
+            var date = moment.unix(data.current.dt).format("MM/DD/YYYY");
+            // creates a card title element with the city name as the text
+            var cardTitleEl = $("<h3>").addClass("card-title").attr("id", "searched-city").text(response[0].name);
+            // creates an img element to hold an icon
+            var iconImg = $("<img>").attr("src","http://openweathermap.org/img/wn/"+ data.current.weather[0].icon + "@2x.png");
+            // appends date and icon to the card title
+            cardTitleEl.append(" ",date,": ",iconImg);
+            // appends card title to the card body
+            $("#c-w").append(cardTitleEl);
+            // appends the weather info for the current weather to the card body
+            for(var i = 0; i < curWeath.length; i++){
+                var textEl = $("<p>").addClass("card-text").text(weathMetric[0][i] + curWeath[i] + weathMetric[1][i]);
+                $("#c-w").append(textEl);
+            }
+        })
+    });
+   
+    
+   
+   
 }
 
 $("#target").submit(function(event){
