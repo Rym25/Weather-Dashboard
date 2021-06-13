@@ -1,3 +1,7 @@
+header {
+    text-align: center;
+}
+
 .badge-orange {
     background-color: rgb(255, 139, 7);
     color: white;
