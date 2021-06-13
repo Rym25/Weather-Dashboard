@@ -43,7 +43,7 @@ var displayWeather = function(data) {
     var weathMetric = [["Temp: ","Wind: ","Humidity: "],[" °F"," MPH"," %",]];
 
     // gets the city name based on the latitude and longitude used in the One API call and appends a card title with the city, date, and an icon for the current weather
-    fetch("http://api.openweathermap.org/geo/1.0/reverse?lat="+data.lat+"&lon="+data.lon+"&appid=ef42ec77e5abd2ef83947df102ff17d6")
+    fetch("https://api.openweathermap.org/geo/1.0/reverse?lat="+data.lat+"&lon="+data.lon+"&appid=ef42ec77e5abd2ef83947df102ff17d6")
     .then(function(res){
         res.json().then(function(response) {
             // save the current city
@@ -53,7 +53,7 @@ var displayWeather = function(data) {
             // creates a card title element with the city name as the text
             var cardTitleEl = $("<h3>").addClass("card-title").attr("id", "searched-city").text(response[0].name);
             // creates an img element to hold an icon
-            var iconImg = $("<img>").attr("src","http://openweathermap.org/img/wn/"+ data.current.weather[0].icon + "@2x.png");
+            var iconImg = $("<img>").attr("src","https://openweathermap.org/img/wn/"+ data.current.weather[0].icon + "@2x.png");
             // appends date and icon to the card title
             cardTitleEl.append(" ",date,": ",iconImg);
             // empty target element
@@ -100,7 +100,7 @@ var fiveDayCard = function (weathArr, metArr) {
     var cardEl = $("<div>").addClass("card five-day-cards border border-white");
     var cardBody = $("<div>").addClass("card-body");
     var cardTitleEl = $("<h4>").addClass("card-title").text(weathArr[0]);
-    var cardSubEl = $("<img>").addClass("card-subtitle").attr("src","http://openweathermap.org/img/wn/"+ weathArr[1] + "@2x.png");
+    var cardSubEl = $("<img>").addClass("card-subtitle").attr("src","https://openweathermap.org/img/wn/"+ weathArr[1] + "@2x.png");
     cardBody.append(cardTitleEl, cardSubEl);
     // loops over given arrays to create the card text p elements
     for (var i = 2; i < weathArr.length; i++) {
