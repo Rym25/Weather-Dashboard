@@ -1,9 +1,7 @@
 var geoData = function(city) {
-    console.log("start");
     fetch("https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=5&appid=ef42ec77e5abd2ef83947df102ff17d6")
     .then(function(res) {
         res.json().then(function(data) {
-            console.log(data);
             if (data.length === 0) {
                 alert("Sorry, could not find the city you were looking for.");
             }else{
@@ -39,7 +37,6 @@ var weatherData = function(coord) {
 }
 
 var displayWeather = function(data) {
-    console.log(data);
     // puts needed weather data into an array
     var curWeath = [data.current.temp, data.current.wind_speed, data.current.humidity];
     // organizes titles for needed data into an array
@@ -117,21 +114,36 @@ var fiveDayCard = function (weathArr, metArr) {
 var saveHistory = function(search, longitude, latitude) {
     // Makes an object with the neccesary data to save
     var historySet = {city: search, coord: {lon: longitude, lat: latitude}};
+
+    // test if the search term is a copy
+    var test = false;
+    for (var i = 0; i < sHistory.length; i++) {
+        if (sHistory[i].city === historySet.city) {
+            test = true;
+            break;
+        }
+    }
+
     // Set a limit on how many cities you can have in the search history
-    if (sHistory.length >= 5) {
-        sHistory.splice(0,1);
-        sHistory.push(historySet);
-    } else {
-        sHistory.push(historySet);
+    if (!test){
+        if (sHistory.length >= 5) {
+            sHistory.splice(0,1);
+            sHistory.push(historySet);
+        } else {
+            sHistory.push(historySet);
+        }
     }
 
     localStorage.setItem("sHistory", JSON.stringify(sHistory));
-    historyButtons(historySet);
+    historyButtons(sHistory);
 }
 
-var historyButtons = function(historySet) {
-        var hisButtEl = $("<button>").addClass("col-12 btn btn-secondary").attr("value",JSON.stringify(historySet.coord)).text(historySet.city);
+var historyButtons = function(history) {
+    $("#history").empty();
+    for (var i = 0; i < history.length; i++){
+        var hisButtEl = $("<button>").addClass("col-12 mt-2 btn btn-secondary").attr("value",JSON.stringify(history[i].coord)).text(history[i].city);
         $("#history").append(hisButtEl);
+    }
 }
 
 var sHistory = JSON.parse(localStorage.getItem("sHistory"));
