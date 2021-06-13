@@ -133,23 +133,26 @@ var saveHistory = function(search, longitude, latitude) {
             sHistory.push(historySet);
         }
     }
-
+    // saves the new sHistory array and then makes buttons using that array
     localStorage.setItem("sHistory", JSON.stringify(sHistory));
     historyButtons(sHistory);
 }
 
 var historyButtons = function(history) {
+    // empty history buttons then replaces it with a button for each element from the history array
     $("#history").empty();
     for (var i = 0; i < history.length; i++){
         var hisButtEl = $("<button>").addClass("col-12 mt-2 btn btn-secondary").attr("value",JSON.stringify(history[i].coord)).text(history[i].city);
         $("#history").append(hisButtEl);
     }
 }
-
+// on load gets the sHistory array from local storage
 var sHistory = JSON.parse(localStorage.getItem("sHistory"));
-
+// if sHistory doesn't exist sets sHistory to empty array otherwise uses sHistory array to create search history buttons
 if (!sHistory) {
     sHistory = [];
+} else {
+    historyButtons(sHistory);
 }
 
 
@@ -157,4 +160,9 @@ $("#target").submit(function(event){
     event.preventDefault();
     var city = $("#input-city").val();
     geoData(city);
+})
+
+$("#history").on("click","button",function(){
+    var coord = JSON.parse($(this).val());
+    weatherData(coord);
 })
