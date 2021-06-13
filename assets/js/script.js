@@ -39,6 +39,7 @@ var weatherData = function(coord) {
 }
 
 var displayCurrentWeather = function(data) {
+    console.log(data);
     // puts needed weather data into an array
     var curWeath = [data.current.temp, data.current.wind_speed, data.current.humidity];
     // organizes titles for needed data into an array
@@ -78,8 +79,28 @@ var displayCurrentWeather = function(data) {
             }
             uviEl.append(uviSpan);
             $("#c-w").append(uviEl);
+
+            for( var q = 1; q < 6; q++) {
+                var fiveDate = moment.unix(data.daily[q].dt).format("MM/DD/YYYY");
+                var weathArr = [fiveDate, data.daily[q].weather[0].icon, data.daily[q].temp.day, data.daily[q].wind_speed, data.daily[q].humidity];
+                fiveDayCard(weathArr, weathMetric);
+            }
         })
     });
+}
+
+var fiveDayCard = function (weathArr, metArr) {
+    var cardEl = $("<div>").addClass("card");
+    var cardBody = $("<div>").addClass("card-body");
+    var cardTitleEl = $("<h4>").addClass("card-title").text(weathArr[0]);
+    var cardSubEl = $("<img>").addClass("card-subtitle").attr("src","http://openweathermap.org/img/wn/"+ weathArr[1] + "@2x.png");
+    cardBody.append(cardTitleEl, cardSubEl);
+    for (var i = 2; i < weathArr.length; i++) {
+        var cardInfoEl = $("<p>").addClass("card-text").text(metArr[0][i-2] + weathArr[i] + metArr[1][i-2]);
+        cardBody.append(cardInfoEl);
+    }
+    cardEl.append(cardBody);
+    $("#five-day").append(cardEl);
 }
 
 $("#target").submit(function(event){
