@@ -1,0 +1,13 @@
+header {
+    text-align: center;
+}
+
+.badge-orange {
+    background-color: rgb(255, 139, 7);
+    color: white;
+}
+
+.five-day-cards {
+    background-color: navy;
+    color: white;
+}
