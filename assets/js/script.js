@@ -17,7 +17,7 @@ var geoData = function(city) {
                         }
                     }
                 } else {
-                    var coord = { "lon": data[i].lon, "lat": data[i].lat}
+                    var coord = { "lon": data[0].lon, "lat": data[0].lat}
                             weatherData(coord);
                 }
             }
@@ -49,6 +49,8 @@ var displayWeather = function(data) {
     fetch("http://api.openweathermap.org/geo/1.0/reverse?lat="+data.lat+"&lon="+data.lon+"&appid=ef42ec77e5abd2ef83947df102ff17d6")
     .then(function(res){
         res.json().then(function(response) {
+            // save the current city
+            saveHistory(response[0].name, data.lon, data.lat);
             // gets current date
             var date = moment.unix(data.current.dt).format("MM/DD/YYYY");
             // creates a card title element with the city name as the text
@@ -57,6 +59,8 @@ var displayWeather = function(data) {
             var iconImg = $("<img>").attr("src","http://openweathermap.org/img/wn/"+ data.current.weather[0].icon + "@2x.png");
             // appends date and icon to the card title
             cardTitleEl.append(" ",date,": ",iconImg);
+            // empty target element
+            $("#c-w").empty();
             // appends card title to the card body
             $("#c-w").append(cardTitleEl);
             // appends the weather info for the current weather to the card body
@@ -80,6 +84,8 @@ var displayWeather = function(data) {
             uviEl.append(uviSpan);
             $("#c-w").append(uviEl);
 
+            // empties five-day element
+            $("#five-day").empty();
             // creates the 5 day forecast
             for( var q = 1; q < 6; q++) {
                 // gets the date data from the daily section of the json
@@ -107,6 +113,33 @@ var fiveDayCard = function (weathArr, metArr) {
     cardEl.append(cardBody);
     $("#five-day").append(cardEl);
 }
+
+var saveHistory = function(search, longitude, latitude) {
+    // Makes an object with the neccesary data to save
+    var historySet = {city: search, coord: {lon: longitude, lat: latitude}};
+    // Set a limit on how many cities you can have in the search history
+    if (sHistory.length >= 5) {
+        sHistory.splice(0,1);
+        sHistory.push(historySet);
+    } else {
+        sHistory.push(historySet);
+    }
+
+    localStorage.setItem("sHistory", JSON.stringify(sHistory));
+    historyButtons(historySet);
+}
+
+var historyButtons = function(historySet) {
+        var hisButtEl = $("<button>").addClass("col-12 btn btn-secondary").attr("value",JSON.stringify(historySet.coord)).text(historySet.city);
+        $("#history").append(hisButtEl);
+}
+
+var sHistory = JSON.parse(localStorage.getItem("sHistory"));
+
+if (!sHistory) {
+    sHistory = [];
+}
+
 
 $("#target").submit(function(event){
     event.preventDefault();
