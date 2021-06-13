@@ -66,7 +66,7 @@ var displayWeather = function(data) {
             }
             // creates UVI element and color codes it
             var uviEl = $("<p>").addClass("card-text").text("UVI: ");
-            var uviSpan = $("<span>").addClass("badge badge-pill").text(data.current.uvi);
+            var uviSpan = $("<span>").addClass("badge").text(data.current.uvi);
             // set the color based on the uvi
             if (parseInt(data.current.uvi) <= 2.5){
                 uviSpan.addClass("badge-success");
